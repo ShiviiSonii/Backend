@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShiviiSonii/Backend.git"
+  },
+  "author": "Shivi Soni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShiviiSonii/Backend/issues"
+  },
+  "homepage": "https://github.com/ShiviiSonii/Backend#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
