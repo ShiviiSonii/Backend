@@ -1,24 +1,37 @@
+// Importing the Express framework to create and manage the server.
 import express from "express";
+
+// Importing the CORS middleware to handle Cross-Origin Resource Sharing.
 import cors from "cors";
+
+// Importing the cookie-parser middleware to handle parsing cookies from incoming requests.
 import cookieParser from "cookie-parser";
 
-const app = express()
+// Creating an instance of the Express application.
+const app = express();
 
+// Configuring CORS middleware to allow requests from specified origins and to support credentials.
 app.use(cors({
-    origin : process.env.CORS_ORIGIN,
-    credentials : true
-}))
+    origin: process.env.CORS_ORIGIN, // Allows requests from specified origin (defined in environment variables).
+    credentials: true // Allows credentials to be sent with the request (e.g., cookies).
+}));
 
+// Configuring Express middleware to parse incoming JSON requests and limit the payload size to 16kb.
 app.use(express.json({
-    limit:"16kb"
-}))
+    limit: "16kb"
+}));
 
+// Configuring Express middleware to parse incoming URL-encoded data and limit the payload size to 16kb.
 app.use(express.urlencoded({
-    extended:true,
-    limit:"16kb"
-}))
+    extended: true, // Allows parsing of URL-encoded data with rich objects and arrays.
+    limit: "16kb"
+}));
 
-app.use(express.static("public"))
-app.use(cookieParser())
+// Serving static files from the "public" directory.
+app.use(express.static("public"));
 
-export default app
+// Configuring Express to use the cookie-parser middleware for parsing cookies from incoming requests.
+app.use(cookieParser());
+
+
+export default app;
