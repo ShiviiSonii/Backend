@@ -1,14 +1,4 @@
-/**
- * Class representing an API error.
- */
 class apiError extends Error {
-    /**
-     * Create an API error.
-     * @param {number} statusCode - The HTTP status code of the error.
-     * @param {string} message - The error message (default: "Something went wrong!").
-     * @param {Array} errors - An array of additional errors or error details (default: []).
-     * @param {string} stack - The stack trace of the error (default: "").
-     */
     constructor(
         statusCode,
         message = "Something went wrong!",
