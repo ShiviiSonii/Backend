@@ -8,9 +8,9 @@ const asyncHandler = (fn) => async (req, res, next) => {
         await fn(req, res, next); // Invokes the provided asynchronous function.
     } catch (error) {
         // Handles errors by sending an appropriate error response.
-        res.status(err.code || 500).json({
+        res.status(error.code || 500).json({
             success: false, // Indicates failure.
-            message: err.message // Error message.
+            message: error.message // Error message.
         });
     }
 };

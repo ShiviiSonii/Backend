@@ -5,13 +5,14 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import apiResponse from "../utils/apiResponse.js"
 
 const registerUser = asyncHandler (async(req,res) => {
+    
     // res.status(200).json({
     //     message : "ok"
     // })
 
     // get user details from frontend
     const {fullname, username, email,password} = req.body
-    console.log("fullname :",fullname)
+    // console.log("fullname :",fullname)
 
     // validation
     if(
@@ -21,7 +22,7 @@ const registerUser = asyncHandler (async(req,res) => {
     }
 
     // check if user already exists : username , email
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [ { email },{ username } ]
     })
 
@@ -31,7 +32,12 @@ const registerUser = asyncHandler (async(req,res) => {
 
     // check for images and avatars
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+        coverImageLocalPath = req.files.coverImage[0].path;
+    }
 
     // check avatar images (which is mandatory)
     if(!avatarLocalPath) throw new apiError(400, "Please upload avatar file!")
