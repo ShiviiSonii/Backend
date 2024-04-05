@@ -6,8 +6,9 @@ import apiResponse from "../utils/apiResponse.js"
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
-
+        // console.log(userId)
         const user = await User.findById(userId)
+        // console.log(user)
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
@@ -102,7 +103,7 @@ const loginUser = asyncHandler (async(req,res) => {
     const {email, username, password} = req.body
 
     // get access on username or email
-    if (!username || !email) throw new apiError(400, "Username or email is required")
+    if (!username && !email) throw new apiError(400, "Username or email is required")
 
     // find the user based on username or email
     const user = await User.findOne({
