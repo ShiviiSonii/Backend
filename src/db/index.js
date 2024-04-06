@@ -1,4 +1,3 @@
-// Importing the mongoose library for MongoDB interactions.
 import mongoose from "mongoose";
 
 // Importing the constant DB_NAME from the constants module.
