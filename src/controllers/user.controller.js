@@ -4,6 +4,7 @@ import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import apiResponse from "../utils/apiResponse.js"
 import jwt from "jsonwebtoken"
+import {deleteFile} from "../utils/deleteOldFile.js"
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
@@ -311,6 +312,11 @@ const updateUserAvatar = asyncHandler (async(req,res) => {
         {new: true}
     ).select(-password)
 
+     // Delete old avatar if it exists
+     if (req.user.avatar) {
+        deleteFile(req.user.avatar); // Use the utility function to delete the old avatar file
+    }
+
     return res
     .status(200)
     .json(
@@ -343,6 +349,11 @@ const updateUserCoverImage = asyncHandler (async(req,res) => {
         {new: true}
     ).select(-password)
 
+    // TODO : DELETE OLD IMAGE
+
+    if (req.user.coverImage) {
+        deleteFile(req.user.coverImage); // Use the utility function to delete the old avatar file
+    }
 
     return res
     .status(200)
