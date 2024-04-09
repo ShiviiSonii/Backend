@@ -176,7 +176,6 @@ const logoutUser = asyncHandler (async(req,res) => {
 
 })
 
-// controller for refresh acess token 
 const refreshAccessToken = asyncHandler (async(req,res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
@@ -314,7 +313,11 @@ const updateUserAvatar = asyncHandler (async(req,res) => {
 
      // Delete old avatar if it exists
      if (req.user.avatar) {
-        deleteFile(req.user.avatar); // Use the utility function to delete the old avatar file
+        try {
+            deleteFile(req.user.avatar); // Use the utility function to delete the old avatar file
+        } catch (error) {
+            new apiError(400,"Error deleting old avatar file")
+        }
     }
 
     return res
@@ -352,7 +355,11 @@ const updateUserCoverImage = asyncHandler (async(req,res) => {
     // TODO : DELETE OLD IMAGE
 
     if (req.user.coverImage) {
-        deleteFile(req.user.coverImage); // Use the utility function to delete the old avatar file
+        try {
+            deleteFile(req.user.coverImage); // Use the utility function to delete the old avatar file
+        } catch (error) {
+            new apiError(400,"Error deleting old coverImage")
+        }
     }
 
     return res
@@ -366,6 +373,77 @@ const updateUserCoverImage = asyncHandler (async(req,res) => {
     )
 })
 
+const getUserChannelProfile = asyncHandler (async(req,res) => {
+    const {username} = req.params
+    if(!username.trim())
+        throw new apiError(400,"Username is misssing!")
+
+    const channel = await User.aggregate([
+        {
+            $match : {
+                username : username?.toLowerCase(),
+
+            }
+        },
+        {
+            $lookup : {
+                from : "subscriptions",
+                localField : "_id",
+                foreignField : "channel",
+                as : "subscribers"
+            }
+        },
+        {
+            $lookup : {
+                from : "subscriptions",
+                localField : "_id",
+                foreignField : "subscriber",
+                as : "subscribedTo"
+            }
+        },
+        {
+            $addFields : {
+                subscribersCount : {
+                    $size : "$subscribers"
+                }, 
+                channelsSubscribedToCount : {
+                    $size : "$subscribedTo"
+                },
+                isSubscribed : {
+                    $cond : {
+                        if : {$in : [req.user?._id, "$subscribers.subscriber"]},
+                        then : true,
+                        else : false
+                    }
+                }
+            }
+        },
+        {
+            $project : {
+                fullname : 1,
+                username : 1,
+                subscribersCount : 1,
+                channelsSubscribedToCount : 1,
+                isSubscribed : 1,
+                avatar : 1,
+                coverImage : 1,
+                email : 1,
+                createdAt : 1
+            }
+        }
+    ])
+
+    console.log(channel)
+
+    if(!channel?.length) throw new apiError(400,"Channel doesnot exist!")
+
+    return res
+    .status(200)
+    .json(
+        new apiResponse(200,channel[0],"User channel fetched successfully!")
+    )
+})
+
 export {
     registerUser, 
     loginUser,
@@ -375,5 +453,6 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateUserCoverImage
+    updateUserCoverImage,
+    getUserChannelProfile
 }
