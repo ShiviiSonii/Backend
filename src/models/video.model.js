@@ -18,7 +18,8 @@ const videoSchema = new mongoose.Schema({
         requured : true,
     },
     avatar : {
-
+        type:String, //cloudinary url
+        required : true
     },
     videoFile : {
         type:String, //cloudinary url
