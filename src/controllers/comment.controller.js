@@ -33,7 +33,7 @@ const addComment = asyncHandler(async (req, res) => {
         )
     } catch (error) {
         return res.status(500).json(
-            new apiError(500, "Internal Server Error")
+            new apiError(500, "Internal Server Error while adding comment ")
         );
     }
 })
